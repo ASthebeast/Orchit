@@ -1,5 +1,6 @@
 package org.samvid.orchit.ui.component
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,7 +21,7 @@ import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
 import androidx.media3.common.util.UnstableApi
 
-@OptIn(UnstableApi::class)
+@OptIn(markerClass = [UnstableApi::class])
 @Composable
 fun PreviewArea(
     isPlaying: Boolean,
