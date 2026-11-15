@@ -17,12 +17,14 @@ class FakeEditorUiContract : EditorUiContract {
     )
 
     override val state: StateFlow<EditorUiState> = mutableState
+    override val previewPlayer: androidx.media3.common.Player? = null
 
     override fun dispatch(action: EditorAction) {
         val current = mutableState.value
         mutableState.value = when (action) {
             EditorAction.Play -> current.copy(isPlaying = true)
             EditorAction.Pause -> current.copy(isPlaying = false)
+            is EditorAction.ImportVideo -> current.copy(durationUs = current.durationUs + action.durationUs)
             is EditorAction.Seek -> current.copy(playheadUs = action.targetPositionUs.coerceAtLeast(0L))
             is EditorAction.ScrubStarted -> current.copy(
                 playheadUs = action.targetPositionUs.coerceAtLeast(0L),

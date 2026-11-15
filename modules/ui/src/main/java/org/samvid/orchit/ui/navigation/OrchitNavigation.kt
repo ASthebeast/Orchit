@@ -6,6 +6,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -20,6 +22,7 @@ import org.samvid.orchit.ui.StoredProjectListContract
 import org.samvid.orchit.ui.EngineEditorUiContract
 import org.samvid.orchit.engine.ProjectId
 import org.samvid.orchit.engine.TimelineEditor
+import org.samvid.orchit.engine.Media3PlaybackController
 import org.samvid.orchit.engine.Project
 
 enum class OrchitScreen(
@@ -61,16 +64,19 @@ fun OrchitNavHost(
             )
         }
         composable(OrchitScreen.Editor.route) {
+            val context = LocalContext.current
             val projectId = if (projectList == null) null else {
                 val projectListState by projectList.state.collectAsStateWithLifecycle()
                 projectListState.openedProjectId
             }
-            val editor = androidx.compose.runtime.remember(projectId, dependencies) {
+            val editor = androidx.compose.runtime.remember(projectId, dependencies, context) {
                 if (dependencies == null) null else {
                     val project = if (projectId == null) null else dependencies.storage.load(ProjectId(projectId))
-                    EngineEditorUiContract(TimelineEditor(project ?: Project(ProjectId("empty"), "Untitled Project", emptyList())))
+                    val activeProject = project ?: Project(ProjectId("empty"), "Untitled Project", emptyList())
+                    EngineEditorUiContract(TimelineEditor(activeProject), dependencies.storage, Media3PlaybackController(context, activeProject))
                 }
             }
+            DisposableEffect(editor) { onDispose { (editor as? AutoCloseable)?.close() } }
             EditorScreen(windowSize = windowSize, editorContract = editor)
         }
         composable(OrchitScreen.Settings.route) {

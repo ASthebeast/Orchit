@@ -16,6 +16,8 @@ android {
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
 dependencies {
+    api("androidx.media3:media3-exoplayer:1.11.1")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("com.google.code.gson:gson:2.13.1")
     implementation(project(":effects"))
     implementation(project(":audio"))

@@ -50,7 +50,7 @@ Uses `OrchitWindowSize` (Compact / Medium / Expanded) derived from `BoxWithConst
 - **Medium** (600–840dp): `NavigationRail`, side-by-side preview + timeline
 - **Expanded** (≥ 840dp): `NavigationRail`, preview left / timeline+toolbar right
 
-Editor and project-list screens collect their contracts with lifecycle-aware Compose state collection. `StoredProjectListContract` adapts local engine storage to the home screen, and `EngineEditorUiContract` adapts a `TimelineEditor` to observable editor state. The app injects storage through a small manual dependency object. Fakes remain available for previews and UI development.
+Editor and project-list screens collect their contracts with lifecycle-aware Compose state collection. `StoredProjectListContract` adapts local engine storage to the home screen, and `EngineEditorUiContract` adapts a `TimelineEditor` and Media3 playback controller to observable editor state. `PlayerView` renders the video preview, and the editor imports video through the Android photo picker without storage permission, retaining the selected URI grant and saving the new clip through project storage. The app injects storage through a small manual dependency object. Fakes remain available for previews and UI development.
 
 ## Must not touch
 

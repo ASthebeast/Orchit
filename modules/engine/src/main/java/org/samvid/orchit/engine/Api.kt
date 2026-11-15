@@ -1,5 +1,7 @@
 package org.samvid.orchit.engine
 
+import kotlinx.coroutines.flow.StateFlow
+
 /** Stable identifier for a locally stored project. */
 @JvmInline value class ProjectId(val value: String)
 /** Stable identifier for a timeline object. */
@@ -91,8 +93,17 @@ interface UndoRedo {
     /** Whether an undone project state can be reapplied. */
     fun canRedo(): Boolean
 }
-/** Playback state exposed to editor clients. */
-interface PlaybackController { fun seek(position: TimelineTimeUs); fun play(); fun pause(); fun position(): TimelineTimeUs }
+/** Observable playback state exposed to editor clients. */
+data class PlaybackState(val positionUs: Long, val durationUs: Long, val isPlaying: Boolean)
+interface PlaybackController : AutoCloseable {
+    val state: StateFlow<PlaybackState>
+    fun seek(position: TimelineTimeUs)
+    fun play()
+    fun pause()
+    fun position(): TimelineTimeUs
+    /** Replaces the active timeline playlist after edits. */
+    fun replaceProject(project: Project)
+}
 /** Renders a project to a caller-selected local destination. */
 interface ProjectExporter { fun export(project: Project, destination: MediaReference) }
 /** Loads and saves local project documents. */

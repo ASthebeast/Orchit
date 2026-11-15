@@ -5,6 +5,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.samvid.orchit.engine.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers
 
 class EngineUiContractsTest {
     @get:Rule val temp = TemporaryFolder()
@@ -23,7 +26,8 @@ class EngineUiContractsTest {
     }
 
     @Test fun editorActionsUpdateObservableState() {
-        val editor = EngineEditorUiContract(TimelineEditor(Project(ProjectId("p"), "Cut", emptyList())))
+        val project = Project(ProjectId("p"), "Cut", emptyList())
+        val editor = EngineEditorUiContract(TimelineEditor(project), LocalProjectStorage(temp.root), FakePlaybackController(), Dispatchers.Unconfined)
         editor.dispatch(EditorAction.ScrubStarted(45))
         assertEquals(45L, editor.state.value.playheadUs)
         assertTrue(editor.state.value.isScrubbing)
@@ -31,5 +35,16 @@ class EngineUiContractsTest {
         assertEquals("v1", editor.state.value.selectedTrackId)
         editor.dispatch(EditorAction.Pause)
         assertFalse(editor.state.value.isPlaying)
+        editor.close()
+    }
+
+    private class FakePlaybackController : PlaybackController {
+        override val state: StateFlow<PlaybackState> = MutableStateFlow(PlaybackState(0, 0, false))
+        override fun seek(position: TimelineTimeUs) = Unit
+        override fun play() = Unit
+        override fun pause() = Unit
+        override fun position() = TimelineTimeUs(state.value.positionUs)
+        override fun replaceProject(project: Project) = Unit
+        override fun close() = Unit
     }
 }

@@ -1,6 +1,7 @@
 package org.samvid.orchit.ui
 
 import kotlinx.coroutines.flow.StateFlow
+import androidx.media3.common.Player
 
 /** Lightweight project row presented by the home screen. */
 data class ProjectSummary(val id: String, val name: String)
@@ -37,6 +38,7 @@ data class EditorUiState(
     val projectName: String,
     val isPlaying: Boolean,
     val playheadUs: Long,
+    val durationUs: Long = 0L,
     val selectedClipId: String? = null,
     val selectedTrackId: String? = null,
     val isScrubbing: Boolean = false,
@@ -46,6 +48,9 @@ data class EditorUiState(
 interface EditorUiContract {
     /** Current editor state, updated as playback and user actions change it. */
     val state: StateFlow<EditorUiState>
+
+    /** Player attached to the editor preview, or null for preview fakes. */
+    val previewPlayer: Player?
 
     /** Dispatches a user intent from the editor. */
     fun dispatch(action: EditorAction)
@@ -58,6 +63,9 @@ sealed interface EditorAction {
 
     /** Pauses playback. */
     data object Pause : EditorAction
+
+    /** Adds a video selected through the Android photo picker. */
+    data class ImportVideo(val uri: String, val mimeType: String, val durationUs: Long) : EditorAction
 
     /** Seeks directly to a target timeline position. */
     data class Seek(val targetPositionUs: Long) : EditorAction

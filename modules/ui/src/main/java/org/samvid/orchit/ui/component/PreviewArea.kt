@@ -15,11 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.Player
+import androidx.media3.ui.PlayerView
+import androidx.media3.common.util.UnstableApi
 
+@OptIn(UnstableApi::class)
 @Composable
 fun PreviewArea(
     isPlaying: Boolean,
     onPlayPauseClick: () -> Unit,
+    player: Player? = null,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -28,12 +34,19 @@ fun PreviewArea(
         shape = MaterialTheme.shapes.medium,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = "Preview",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.align(Alignment.Center),
+            AndroidView(
+                factory = { context -> PlayerView(context).apply { useController = false; this.player = player } },
+                update = { it.player = player },
+                modifier = Modifier.fillMaxSize(),
             )
+            if (player == null) {
+                Text(
+                    text = "Preview",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.Center),
+                )
+            }
             FloatingActionButton(
                 onClick = onPlayPauseClick,
                 modifier = Modifier

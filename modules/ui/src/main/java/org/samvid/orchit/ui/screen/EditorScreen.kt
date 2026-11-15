@@ -13,12 +13,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import android.media.MediaMetadataRetriever
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.Player
 import org.samvid.orchit.ui.EditorAction
 import org.samvid.orchit.ui.EditorUiContract
 import org.samvid.orchit.ui.component.EditorToolbar
@@ -40,16 +47,33 @@ fun EditorScreen(
 ) {
     val contract = remember(editorContract) { editorContract ?: FakeEditorUiContract() }
     val state by contract.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            runCatching { context.contentResolver.takePersistableUriPermission(uri, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+            val durationUs = runCatching {
+                val retriever = MediaMetadataRetriever()
+                try {
+                    retriever.setDataSource(context, uri)
+                    requireNotNull(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)).toLong() * 1_000L
+                } finally {
+                    retriever.release()
+                }
+            }.getOrDefault(0L)
+            if (durationUs > 0L) contract.dispatch(EditorAction.ImportVideo(uri.toString(), context.contentResolver.getType(uri) ?: "video/*", durationUs))
+        }
+    }
     val tracks = remember { FakeTimelineData.sampleTracks() }
-    val playheadFraction = (state.playheadUs.toFloat() / TimelineDurationUs).coerceIn(0f, 1f)
+    val timelineDurationUs = state.durationUs.takeIf { it > 0L } ?: TimelineDurationUs
+    val playheadFraction = (state.playheadUs.toFloat() / timelineDurationUs).coerceIn(0f, 1f)
     val onScrubStarted: (Float) -> Unit = { fraction ->
-        contract.dispatch(EditorAction.ScrubStarted(positionFor(fraction)))
+        contract.dispatch(EditorAction.ScrubStarted(positionFor(fraction, timelineDurationUs)))
     }
     val onScrubTo: (Float) -> Unit = { fraction ->
-        contract.dispatch(EditorAction.ScrubTo(positionFor(fraction)))
+        contract.dispatch(EditorAction.ScrubTo(positionFor(fraction, timelineDurationUs)))
     }
     val onScrubEnded: (Float) -> Unit = { fraction ->
-        contract.dispatch(EditorAction.ScrubEnded(positionFor(fraction)))
+        contract.dispatch(EditorAction.ScrubEnded(positionFor(fraction, timelineDurationUs)))
     }
 
     Scaffold(
@@ -61,6 +85,11 @@ fun EditorScreen(
                         style = MaterialTheme.typography.titleMedium,
                     )
                 },
+                actions = {
+                    TextButton(onClick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }) {
+                        Text("Import video")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
@@ -71,6 +100,7 @@ fun EditorScreen(
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             when (windowSize) {
                 OrchitWindowSize.Compact -> CompactEditorLayout(
+                    previewPlayer = contract.previewPlayer,
                     isPlaying = state.isPlaying,
                     tracks = tracks,
                     playheadFraction = playheadFraction,
@@ -86,6 +116,7 @@ fun EditorScreen(
                     onDeselectTrack = { contract.dispatch(EditorAction.DeselectTrack) },
                 )
                 OrchitWindowSize.Medium -> MediumEditorLayout(
+                    previewPlayer = contract.previewPlayer,
                     isPlaying = state.isPlaying,
                     tracks = tracks,
                     playheadFraction = playheadFraction,
@@ -101,6 +132,7 @@ fun EditorScreen(
                     onDeselectTrack = { contract.dispatch(EditorAction.DeselectTrack) },
                 )
                 OrchitWindowSize.Expanded -> ExpandedEditorLayout(
+                    previewPlayer = contract.previewPlayer,
                     isPlaying = state.isPlaying,
                     tracks = tracks,
                     playheadFraction = playheadFraction,
@@ -122,6 +154,7 @@ fun EditorScreen(
 
 @Composable
 private fun CompactEditorLayout(
+    previewPlayer: Player?,
     isPlaying: Boolean,
     tracks: List<FakeTrack>,
     playheadFraction: Float,
@@ -140,6 +173,7 @@ private fun CompactEditorLayout(
         PreviewArea(
             isPlaying = isPlaying,
             onPlayPauseClick = onPlayPause,
+            player = previewPlayer,
             modifier = Modifier.fillMaxWidth().weight(0.4f),
         )
         TimelineArea(
@@ -162,6 +196,7 @@ private fun CompactEditorLayout(
 
 @Composable
 private fun MediumEditorLayout(
+    previewPlayer: Player?,
     isPlaying: Boolean,
     tracks: List<FakeTrack>,
     playheadFraction: Float,
@@ -181,6 +216,7 @@ private fun MediumEditorLayout(
             PreviewArea(
                 isPlaying = isPlaying,
                 onPlayPauseClick = onPlayPause,
+                player = previewPlayer,
                 modifier = Modifier.weight(0.5f).fillMaxHeight(),
             )
             TimelineArea(
@@ -204,6 +240,7 @@ private fun MediumEditorLayout(
 
 @Composable
 private fun ExpandedEditorLayout(
+    previewPlayer: Player?,
     isPlaying: Boolean,
     tracks: List<FakeTrack>,
     playheadFraction: Float,
@@ -222,6 +259,7 @@ private fun ExpandedEditorLayout(
         PreviewArea(
             isPlaying = isPlaying,
             onPlayPauseClick = onPlayPause,
+            player = previewPlayer,
             modifier = Modifier.weight(0.45f).fillMaxHeight(),
         )
         Column(modifier = Modifier.weight(0.55f).fillMaxHeight()) {
@@ -244,8 +282,8 @@ private fun ExpandedEditorLayout(
     }
 }
 
-private fun positionFor(fraction: Float): Long =
-    (fraction.coerceIn(0f, 1f) * TimelineDurationUs).toLong()
+private fun positionFor(fraction: Float, durationUs: Long = TimelineDurationUs): Long =
+    (fraction.coerceIn(0f, 1f) * durationUs).toLong()
 
 private fun org.samvid.orchit.ui.EditorUiState.playPauseAction(): EditorAction =
     if (isPlaying) EditorAction.Pause else EditorAction.Play
