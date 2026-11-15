@@ -50,7 +50,7 @@ Uses `OrchitWindowSize` (Compact / Medium / Expanded) derived from `BoxWithConst
 - **Medium** (600–840dp): `NavigationRail`, side-by-side preview + timeline
 - **Expanded** (≥ 840dp): `NavigationRail`, preview left / timeline+toolbar right
 
-Editor and project-list screens collect their contracts with lifecycle-aware Compose state collection. Fakes supply sample state for previews and UI development; no engine or editing implementation is connected.
+Editor and project-list screens collect their contracts with lifecycle-aware Compose state collection. `StoredProjectListContract` adapts local engine storage to the home screen, and `EngineEditorUiContract` adapts a `TimelineEditor` to observable editor state. The app injects storage through a small manual dependency object. Fakes remain available for previews and UI development.
 
 ## Must not touch
 
@@ -58,4 +58,4 @@ Media processing, persistence implementation, format ownership, audio DSP, or ne
 
 ## Dependencies
 
-The UI consumes public contracts and exposes `StateFlow` through its public API. Compose state collection uses AndroidX Lifecycle Compose. The engine is the composition root and may wire modules later; all app behavior remains local and offline.
+The UI consumes public contracts and exposes `StateFlow` through its public API. Compose state collection uses AndroidX Lifecycle Compose. It depends on the engine for concrete adapters; all app behavior remains local and offline.

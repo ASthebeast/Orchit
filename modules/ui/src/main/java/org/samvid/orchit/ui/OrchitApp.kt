@@ -22,13 +22,16 @@ import org.samvid.orchit.ui.navigation.OrchitNavHost
 import org.samvid.orchit.ui.navigation.OrchitScreen
 import org.samvid.orchit.ui.navigation.OrchitWindowSize
 import org.samvid.orchit.ui.theme.OrchitTheme
+import org.samvid.orchit.engine.LocalProjectStorage
+
+data class OrchitDependencies(val storage: LocalProjectStorage)
 
 /**
  * Root composable for the Orchit app.
  * Entry point exposed by the UI module.
  */
 @Composable
-fun OrchitApp() {
+fun OrchitApp(dependencies: OrchitDependencies? = null) {
     OrchitTheme {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val windowSize = when {
@@ -69,6 +72,7 @@ fun OrchitApp() {
                     OrchitNavHost(
                         navController = navController,
                         windowSize = windowSize,
+                        dependencies = dependencies,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
@@ -100,6 +104,7 @@ fun OrchitApp() {
                     OrchitNavHost(
                         navController = navController,
                         windowSize = windowSize,
+                        dependencies = dependencies,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
