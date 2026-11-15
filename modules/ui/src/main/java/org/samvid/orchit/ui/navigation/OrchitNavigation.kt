@@ -5,11 +5,13 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.samvid.orchit.ui.screen.EditorScreen
 import org.samvid.orchit.ui.screen.HomeScreen
 import org.samvid.orchit.ui.screen.SettingsScreen
@@ -59,7 +61,10 @@ fun OrchitNavHost(
             )
         }
         composable(OrchitScreen.Editor.route) {
-            val projectId = projectList?.state?.value?.openedProjectId
+            val projectId = if (projectList == null) null else {
+                val projectListState by projectList.state.collectAsStateWithLifecycle()
+                projectListState.openedProjectId
+            }
             val editor = androidx.compose.runtime.remember(projectId, dependencies) {
                 if (dependencies == null) null else {
                     val project = if (projectId == null) null else dependencies.storage.load(ProjectId(projectId))
