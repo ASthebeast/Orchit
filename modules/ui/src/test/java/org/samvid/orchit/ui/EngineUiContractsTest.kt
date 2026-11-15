@@ -39,10 +39,13 @@ class EngineUiContractsTest {
     }
 
     private class FakePlaybackController : PlaybackController {
-        override val state: StateFlow<PlaybackState> = MutableStateFlow(PlaybackState(0, 0, false))
-        override fun seek(position: TimelineTimeUs) = Unit
-        override fun play() = Unit
-        override fun pause() = Unit
+        private val mutableState = MutableStateFlow(PlaybackState(0, 100, false))
+        override val state: StateFlow<PlaybackState> = mutableState
+        override fun seek(position: TimelineTimeUs) {
+            mutableState.value = mutableState.value.copy(positionUs = position.value.coerceIn(0, mutableState.value.durationUs))
+        }
+        override fun play() { mutableState.value = mutableState.value.copy(isPlaying = true) }
+        override fun pause() { mutableState.value = mutableState.value.copy(isPlaying = false) }
         override fun position() = TimelineTimeUs(state.value.positionUs)
         override fun replaceProject(project: Project) = Unit
         override fun close() = Unit
