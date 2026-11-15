@@ -6,7 +6,7 @@ Audio tracks, sound effects, volume, fades, and beat synchronization.
 
 ## Exposes
 
-Kotlin contracts and v1 package models in `org.samvid.orchit.audio`. `AudioClipSettingsValidator` accepts finite volume in 0–1, nonnegative fades, and finite speed in 0.25–4. `AudioAssetPackageLoader` strictly reads `{formatVersion,id,name,assets}` manifests; each asset requires a local path and a license from its copyright-free/open-source allowlist (CC0, CC-BY/SA, MIT, Apache-2.0, BSD, ISC, OFL, or 0BSD). Missing, proprietary, or unknown licenses are rejected. `AudioPackageRegistry` indexes validated packages in memory.
+Kotlin contracts and v1 package models in `io.github.asthebeast.orchit.audio`. `AudioClipSettingsValidator` accepts finite volume in 0–1, nonnegative fades, and finite speed in 0.25–4. `AudioAssetPackageLoader` strictly reads `{formatVersion,id,name,assets}` manifests; each asset requires a local path and a license from its copyright-free/open-source allowlist (CC0, CC-BY/SA, MIT, Apache-2.0, BSD, ISC, OFL, or 0BSD). Missing, proprietary, or unknown licenses are rejected. `AudioPackageRegistry` indexes validated packages in memory.
 
 ## Must not touch
 

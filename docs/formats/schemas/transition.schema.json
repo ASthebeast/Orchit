@@ -103,5 +103,5 @@
     }
   },
   "additionalProperties": false,
-  "$id": "https://samvid.org/orchit/formats/transition.json.schema.json"
+  "$id": "https://github.com/ASthebeast/Orchit/blob/main/docs/formats/schemas/transition.schema.json"
 }

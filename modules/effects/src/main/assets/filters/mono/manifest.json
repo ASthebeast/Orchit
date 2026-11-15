@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.filter.mono",
+  "id": "io.github.asthebeast.orchit.filter.mono",
   "name": "Mono",
   "lut": {
     "path": "mono.cube",

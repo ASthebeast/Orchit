@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.slide-right",
+  "id": "io.github.asthebeast.orchit.transition.slide-right",
   "name": "Slide Right",
   "category": "blend",
   "shader": {

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "org.samvid.orchit.engine"
+    namespace = "io.github.asthebeast.orchit.engine"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
     compileOptions {

@@ -1,0 +1,90 @@
+package io.github.asthebeast.orchit.ui.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.asthebeast.orchit.ui.screen.EditorScreen
+import io.github.asthebeast.orchit.ui.screen.HomeScreen
+import io.github.asthebeast.orchit.ui.screen.SettingsScreen
+import io.github.asthebeast.orchit.ui.OrchitDependencies
+import io.github.asthebeast.orchit.ui.StoredProjectListContract
+import io.github.asthebeast.orchit.ui.EngineEditorUiContract
+import io.github.asthebeast.orchit.engine.ProjectId
+import io.github.asthebeast.orchit.engine.TimelineEditor
+import io.github.asthebeast.orchit.engine.Media3PlaybackController
+import io.github.asthebeast.orchit.engine.Project
+
+enum class OrchitScreen(
+    val route: String,
+    val label: String,
+    val icon: ImageVector,
+) {
+    Home(route = "home", label = "Home", icon = Icons.Default.Home),
+    Editor(route = "editor", label = "Editor", icon = Icons.Default.Edit),
+    Settings(route = "settings", label = "Settings", icon = Icons.Default.Settings),
+}
+
+@Composable
+fun OrchitNavHost(
+    navController: NavHostController,
+    windowSize: OrchitWindowSize,
+    dependencies: OrchitDependencies? = null,
+    modifier: Modifier = Modifier,
+) {
+    val projectList = rememberProjectList(dependencies)
+    NavHost(
+        navController = navController,
+        startDestination = OrchitScreen.Home.route,
+        modifier = modifier,
+    ) {
+        composable(OrchitScreen.Home.route) {
+            HomeScreen(
+                onProjectClick = {
+                    navController.navigate(OrchitScreen.Editor.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onNewProject = {
+                    navController.navigate(OrchitScreen.Editor.route) {
+                        launchSingleTop = true
+                    }
+                },
+                projectListContract = projectList,
+            )
+        }
+        composable(OrchitScreen.Editor.route) {
+            val context = LocalContext.current
+            val projectId = if (projectList == null) null else {
+                val projectListState by projectList.state.collectAsStateWithLifecycle()
+                projectListState.openedProjectId
+            }
+            val editor = androidx.compose.runtime.remember(projectId, dependencies, context) {
+                if (dependencies == null) null else {
+                    val project = if (projectId == null) null else dependencies.storage.load(ProjectId(projectId))
+                    val activeProject = project ?: Project(ProjectId("empty"), "Untitled Project", emptyList())
+                    EngineEditorUiContract(TimelineEditor(activeProject), dependencies.storage, Media3PlaybackController(context, activeProject))
+                }
+            }
+            DisposableEffect(editor) { onDispose { (editor as? AutoCloseable)?.close() } }
+            EditorScreen(windowSize = windowSize, editorContract = editor)
+        }
+        composable(OrchitScreen.Settings.route) {
+            SettingsScreen()
+        }
+    }
+}
+
+@Composable
+private fun rememberProjectList(dependencies: OrchitDependencies?): io.github.asthebeast.orchit.ui.ProjectListContract? =
+    androidx.compose.runtime.remember(dependencies) { dependencies?.let { StoredProjectListContract(it.storage) } }

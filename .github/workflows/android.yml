@@ -84,7 +84,7 @@ jobs:
       - name: Publish APK on GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: Samvid-OpenSource/Orchit
+          GH_REPO: ASthebeast/Orchit
         run: |
           apk="app/build/outputs/apk/release/app-release.apk"
           test -f "$apk"

@@ -21,11 +21,11 @@ val hasReleaseSigning = listOf(
 ).all { !it.isNullOrBlank() }
 
 android {
-    namespace = "org.samvid.orchit"
+    namespace = "io.github.asthebeast.orchit"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "org.samvid.orchit"
+        applicationId = "io.github.asthebeast.orchit"
         minSdk = 26
         targetSdk = 36
         versionCode = appVersionCode

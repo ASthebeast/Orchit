@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "org.samvid.orchit.audio"
+    namespace = "io.github.asthebeast.orchit.audio"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
     sourceSets { getByName("test") { resources.srcDir(rootProject.file("docs/formats/samples")) } }

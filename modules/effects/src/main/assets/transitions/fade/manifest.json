@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.fade",
+  "id": "io.github.asthebeast.orchit.transition.fade",
   "name": "Fade",
   "category": "blend",
   "shader": {

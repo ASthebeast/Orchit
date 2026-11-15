@@ -47,5 +47,5 @@
     }
   },
   "additionalProperties": false,
-  "$id": "https://samvid.org/orchit/formats/effect-preset.json.schema.json"
+  "$id": "https://github.com/ASthebeast/Orchit/blob/main/docs/formats/schemas/effect-preset.schema.json"
 }

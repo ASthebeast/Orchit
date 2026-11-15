@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.zoom-out",
+  "id": "io.github.asthebeast.orchit.transition.zoom-out",
   "name": "Zoom Out",
   "category": "blend",
   "shader": {

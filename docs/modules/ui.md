@@ -6,14 +6,14 @@ All Compose screens and editor interaction surfaces for phone and tablet.
 
 ## Exposes
 
-Contracts in `org.samvid.orchit.ui`: `ProjectListContract` with observable project list state and list/create/rename/delete/open operations, plus `EditorUiContract` with lifecycle-collectable `StateFlow<EditorUiState>` and actions for playback, scrubbing, and clip/track selection.
+Contracts in `io.github.asthebeast.orchit.ui`: `ProjectListContract` with observable project list state and list/create/rename/delete/open operations, plus `EditorUiContract` with lifecycle-collectable `StateFlow<EditorUiState>` and actions for playback, scrubbing, and clip/track selection.
 
-Root composable entry point: `OrchitApp()` in `org.samvid.orchit.ui.OrchitApp`.
+Root composable entry point: `OrchitApp()` in `io.github.asthebeast.orchit.ui.OrchitApp`.
 
 ## Structure
 
 ```
-org.samvid.orchit.ui
+io.github.asthebeast.orchit.ui
 ├── Api.kt                    # Project list and reactive editor contracts
 ├── OrchitApp.kt              # Root composable (module entry point)
 ├── component/

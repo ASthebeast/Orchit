@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.wipe",
+  "id": "io.github.asthebeast.orchit.transition.wipe",
   "name": "Wipe",
   "category": "blend",
   "shader": {

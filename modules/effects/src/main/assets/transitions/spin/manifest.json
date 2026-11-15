@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.spin",
+  "id": "io.github.asthebeast.orchit.transition.spin",
   "name": "Spin",
   "category": "blend",
   "shader": {

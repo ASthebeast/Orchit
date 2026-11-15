@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.zoom-in",
+  "id": "io.github.asthebeast.orchit.transition.zoom-in",
   "name": "Zoom In",
   "category": "blend",
   "shader": {

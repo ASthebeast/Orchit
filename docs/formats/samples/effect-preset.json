@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.effect.exposure",
+  "id": "io.github.asthebeast.orchit.effect.exposure",
   "name": "Soft exposure",
-  "effectId": "org.samvid.orchit.color.adjust",
+  "effectId": "io.github.asthebeast.orchit.color.adjust",
   "parameters": {
     "exposure": 0.15,
     "contrast": 1.05

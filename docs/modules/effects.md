@@ -6,7 +6,7 @@ Visual effects, transitions, filters, LUTs, and effect presets.
 
 ## Exposes
 
-Kotlin contracts in `org.samvid.orchit.effects`. `EffectCatalog` exposes registered package ids, names, categories, versions, parameter definitions, primary license identifiers, and all package assets. `EffectPackageRegistry` implements the catalog over validated packages. `AppliedEffect` and `Transition` retain package id, version, and license metadata. `VisualProcessor` receives both input frames or textures and normalized transition progress.
+Kotlin contracts in `io.github.asthebeast.orchit.effects`. `EffectCatalog` exposes registered package ids, names, categories, versions, parameter definitions, primary license identifiers, and all package assets. `EffectPackageRegistry` implements the catalog over validated packages. `AppliedEffect` and `Transition` retain package id, version, and license metadata. `VisualProcessor` receives both input frames or textures and normalized transition progress.
 
 `TransitionPackageLoader`, `FilterPackageLoader`, and `EffectPresetLoader` validate version 1 package manifests, reject unknown fields, and require an SPDX license on every referenced asset. `CubeLutParser` reads and validates textual 3D LUT files.
 

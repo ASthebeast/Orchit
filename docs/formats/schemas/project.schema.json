@@ -135,5 +135,5 @@
     }
   },
   "additionalProperties": false,
-  "$id": "https://samvid.org/orchit/formats/project.json.schema.json"
+  "$id": "https://github.com/ASthebeast/Orchit/blob/main/docs/formats/schemas/project.schema.json"
 }

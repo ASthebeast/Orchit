@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.dissolve",
+  "id": "io.github.asthebeast.orchit.transition.dissolve",
   "name": "Dissolve",
   "category": "blend",
   "shader": {

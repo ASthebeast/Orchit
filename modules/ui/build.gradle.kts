@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "org.samvid.orchit.ui"
+    namespace = "io.github.asthebeast.orchit.ui"
     compileSdk = 36
     defaultConfig { minSdk = 26 }
     buildFeatures { compose = true }

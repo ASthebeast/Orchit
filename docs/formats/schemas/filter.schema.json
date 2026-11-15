@@ -64,5 +64,5 @@
     }
   },
   "additionalProperties": false,
-  "$id": "https://samvid.org/orchit/formats/filter.json.schema.json"
+  "$id": "https://github.com/ASthebeast/Orchit/blob/main/docs/formats/schemas/filter.schema.json"
 }

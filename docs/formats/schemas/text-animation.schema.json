@@ -88,5 +88,5 @@
     }
   },
   "additionalProperties": false,
-  "$id": "https://samvid.org/orchit/formats/text-animation.json.schema.json"
+  "$id": "https://github.com/ASthebeast/Orchit/blob/main/docs/formats/schemas/text-animation.schema.json"
 }

@@ -19,7 +19,7 @@
           "durationUs": 4000000,
           "effects": [
             {
-              "effectId": "org.samvid.orchit.color.adjust",
+              "effectId": "io.github.asthebeast.orchit.color.adjust",
               "parameters": {
                 "exposure": 0.1
               },

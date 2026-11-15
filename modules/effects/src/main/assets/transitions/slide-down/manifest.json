@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.transition.slide-down",
+  "id": "io.github.asthebeast.orchit.transition.slide-down",
   "name": "Slide Down",
   "category": "blend",
   "shader": {

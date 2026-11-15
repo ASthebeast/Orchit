@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "id": "org.samvid.orchit.text.fade",
+  "id": "io.github.asthebeast.orchit.text.fade",
   "name": "Fade in",
   "timing": {
     "durationUs": 500000,
